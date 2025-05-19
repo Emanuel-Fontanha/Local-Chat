@@ -20,26 +20,22 @@ def iniciar_http():
 # Handler do WebSocket
 async def handler_ws(websocket):
     try:
-        # Espera o nome do usuário como primeira mensagem
         nome = await websocket.recv()
         clientes_ws[websocket] = nome
         print(f"[WebSocket] {nome} conectado")
 
-        # Envia histórico para o novo usuário
+        # Envia histórico
         for msg in mensagens_anteriores:
             await websocket.send(f"[Histórico] {msg}")
 
-        # Comunicação em tempo real
         async for mensagem in websocket:
             nome_usuario = clientes_ws[websocket]
             texto_formatado = f"{nome_usuario}: {mensagem}"
             mensagens_anteriores.append(texto_formatado)
 
-            # (opcional) limita o histórico a 20 mensagens
             if len(mensagens_anteriores) > 20:
                 mensagens_anteriores.pop(0)
 
-            # Envia para todos os clientes
             await asyncio.gather(*[
                 c.send(texto_formatado) for c in clientes_ws
             ])
@@ -50,7 +46,12 @@ async def handler_ws(websocket):
         print(f"[WebSocket] {nome} desconectado")
         clientes_ws.pop(websocket, None)
 
-# Rodar servidores
+# Função principal para rodar o WebSocket
+async def main():
+    print(f"[WebSocket] Servidor rodando em ws://0.0.0.0:{PORTA_WS}")
+    async with websockets.serve(handler_ws, "0.0.0.0", PORTA_WS):
+        await asyncio.Future()  # mantém o servidor rodando
+
 if __name__ == "__main__":
     threading.Thread(target=iniciar_http, daemon=True).start()
-    asyncio.run(websockets.serve(handler_ws, "0.0.0.0", PORTA_WS))
+    asyncio.run(main())
