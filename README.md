@@ -18,7 +18,7 @@ Um projeto de chat simples e em tempo real que funciona inteiramente em uma rede
 
 Assista a um vídeo rápido mostrando o chat em ação:
 
-[**>> LINK PARA O VÍDEO AQUI <<**](https://youtu.be/UfOfU4FrSWQ)
+[**>> LINK PARA O VÍDEO AQUI <<**](https://youtu.be/JhxM4uyj2cE)
 
 ---
 
